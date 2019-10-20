@@ -1,3 +1,4 @@
+import os
 import tempfile
 import time
 
@@ -9,15 +10,21 @@ def say(to_say):
     tts = gTTS(to_say)
     tts.lang = "cs"
 
-    with tempfile.NamedTemporaryFile() as f:
-        tts.save(f.name)
+    try:
+        f = tempfile.NamedTemporaryFile(delete=False)
+        temp_file_name = f.name
+        f.close()
+
+        tts.save(temp_file_name)
 
         mixer.init()
-        mixer.music.load(f)
+        mixer.music.load(temp_file_name)
         mixer.music.play()
         while mixer.music.get_busy():
             time.sleep(1)
+    finally:
+        os.unlink(temp_file_name)
 
 
 if __name__ == '__main__':
-    say("Jde chleba a potká chleba s máslem, a chleba s máslem povídá, chlebe, můžu jít s tebou? Přičemž chleba odpoví, jo můžeš, Takže jde chleba, chleba s máslem a potká chleba s máslem se salámem")
+    say("Jde chleba a potká chleba s máslem")
