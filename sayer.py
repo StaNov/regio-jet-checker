@@ -23,6 +23,7 @@ def say(to_say):
         while mixer.music.get_busy():
             time.sleep(1)
     finally:
+        f.close()
         os.unlink(temp_file_name)
 
 
