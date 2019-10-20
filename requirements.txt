@@ -1,0 +1,3 @@
+selenium
+gTTS
+pygame
