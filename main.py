@@ -16,8 +16,12 @@ def main():
 
 def _process_trains(trains: [webbrowser.AvailableTrainInfo]):
     print(f"{datetime.now().replace(microsecond=0)} Available trains: {trains}")
+    sayer.say(_text_to_say(trains))
+
+
+def _text_to_say(trains):
     text_to_say = _trains_to_text(trains) + f"Konec hlášení, ozvu se zase za {SLEEP_IN_MINUTES} minut."
-    sayer.say(text_to_say)
+    return text_to_say
 
 
 def _trains_to_text(trains):
