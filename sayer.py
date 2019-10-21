@@ -1,3 +1,4 @@
+import mmap
 import os
 import tempfile
 import time
@@ -10,22 +11,16 @@ def say(to_say):
     tts = gTTS(to_say)
     tts.lang = "cs"
 
-    try:
-        f = tempfile.NamedTemporaryFile(delete=False)
-        temp_file_name = f.name
-        f.close()
+    with tempfile.NamedTemporaryFile() as f:
+        tts.save(f.name)
+        file_to_play = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 
-        tts.save(temp_file_name)
-
-        mixer.init()
-        mixer.music.load(temp_file_name)
-        mixer.music.play()
-        while mixer.music.get_busy():
-            time.sleep(1)
-    finally:
-        f.close()
-        os.unlink(temp_file_name)
+    mixer.init()
+    mixer.music.load(file_to_play)
+    mixer.music.play()
+    while mixer.music.get_busy():
+        time.sleep(1)
 
 
 if __name__ == '__main__':
-    say("Jde chleba a potká chleba s máslem")
+    say("Jde chleba a potká chleba s máslem, \n\n" * 3)
