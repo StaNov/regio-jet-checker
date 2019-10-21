@@ -1,10 +1,8 @@
-import mmap
-import os
 import tempfile
 import time
 
+import vlc
 from gtts import gTTS
-from pygame import mixer
 
 
 def say(to_say):
@@ -13,13 +11,11 @@ def say(to_say):
 
     with tempfile.NamedTemporaryFile() as f:
         tts.save(f.name)
-        file_to_play = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-
-    mixer.init()
-    mixer.music.load(file_to_play)
-    mixer.music.play()
-    while mixer.music.get_busy():
+        p = vlc.MediaPlayer("file://" + f.name)
+        p.play()
         time.sleep(1)
+        while p.is_playing():
+            time.sleep(1)
 
 
 if __name__ == '__main__':
